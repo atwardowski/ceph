@@ -190,6 +190,9 @@ public:
     touched_log(false), dirty_from(eversion_t::max()),
     dirty_divergent_priors(false) {}
 
+
+  void reset_backfill();
+
   void clear();
 
   //////////////////// get or set missing ////////////////////
