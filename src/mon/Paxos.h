@@ -1215,13 +1215,19 @@ public:
    *
    * @return latest committed version
    */
-  version_t get_version() { return last_committed; }
+  version_t get_version() { return get_last_committed(); }
   /**
    * Get first committed version
    *
    * @return the first committed version
    */
   version_t get_first_committed() { return first_committed; }
+  /**
+   * Get last committed version
+   *
+   * @return last committed version
+   */
+  version_t get_last_committed() { return last_committed; }
   /**
    * Check if a given version is readable.
    *
