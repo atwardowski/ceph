@@ -4668,6 +4668,8 @@ int FileStore::_omap_rmkeyrange(coll_t cid, const hobject_t &hoid,
   set<string> keys;
   {
     ObjectMap::ObjectMapIterator iter = get_omap_iterator(cid, hoid);
+    if (!iter)
+      return -ENOENT;
     for (iter->lower_bound(first); iter->valid() && iter->key() < last;
 	 iter->next()) {
       keys.insert(iter->key());
