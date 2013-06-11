@@ -154,6 +154,7 @@ protected:
   pg_missing_t     missing;
   IndexedLog  log;
   /// Log is clean on (dirty_to, dirty_from]
+  bool touched_log;
   eversion_t dirty_to;
   eversion_t dirty_from;
   bool dirty_divergent_priors;
@@ -162,9 +163,11 @@ protected:
     dirty_to = eversion_t();
     dirty_from = eversion_t::max();
     dirty_divergent_priors = false;
+    touched_log = true;
   }
   bool dirty() const {
-    return (dirty_to != eversion_t()) ||
+    return !touched_log ||
+      (dirty_to != eversion_t()) ||
       (dirty_from != eversion_t::max()) ||
       dirty_divergent_priors;
   }
@@ -183,7 +186,9 @@ protected:
 
 
 public:
-  PGLog() : dirty_from(eversion_t::max()), dirty_divergent_priors(false) {}
+  PGLog() :
+    touched_log(false), dirty_from(eversion_t::max()),
+    dirty_divergent_priors(false) {}
 
   void clear();
 
@@ -316,7 +321,11 @@ public:
 
   void write_log(ObjectStore::Transaction& t, const hobject_t &log_oid) {
     if (dirty()) {
-      write_log(t, log, log_oid, divergent_priors);
+      _write_log(t, log, log_oid, divergent_priors,
+		 dirty_to,
+		 dirty_from,
+		 dirty_divergent_priors,
+		 !touched_log);
       undirty();
     }
   }
@@ -329,7 +338,8 @@ public:
     const hobject_t &log_oid, map<eversion_t, hobject_t> &divergent_priors,
     eversion_t dirty_to,
     eversion_t dirty_from,
-    bool dirty_divergent_priors
+    bool dirty_divergent_priors,
+    bool touch_log
     );
 
   bool read_log(ObjectStore *store, coll_t coll, hobject_t log_oid,

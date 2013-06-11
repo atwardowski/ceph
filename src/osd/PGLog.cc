@@ -524,7 +524,7 @@ void PGLog::write_log(ObjectStore::Transaction& t, pg_log_t &log,
     const hobject_t &log_oid, map<eversion_t, hobject_t> &divergent_priors)
 {
   _write_log(t, log, log_oid, divergent_priors, eversion_t::max(), eversion_t(),
-	     true);
+	     true, true);
 }
 
 void PGLog::_write_log(
@@ -532,10 +532,13 @@ void PGLog::_write_log(
   const hobject_t &log_oid, map<eversion_t, hobject_t> &divergent_priors,
   eversion_t dirty_to,
   eversion_t dirty_from,
-  bool dirty_divergent_priors
+  bool dirty_divergent_priors,
+  bool touch_log
   )
 {
 //dout(10) << "write_log, clearing up to " << dirty_to << dendl;
+  if (touch_log)
+    t.touch(coll_t(), log_oid);
   t.omap_rmkeyrange(
     coll_t(), log_oid,
     eversion_t().get_key_name(), dirty_to.get_key_name());
