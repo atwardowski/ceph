@@ -153,7 +153,7 @@ protected:
   map<eversion_t, hobject_t> divergent_priors;
   pg_missing_t     missing;
   IndexedLog  log;
-  /// Log is clean on (dirty_to, dirty_from]
+  /// Log is clean on [dirty_to, dirty_from)
   bool touched_log;
   eversion_t dirty_to;
   eversion_t dirty_from;

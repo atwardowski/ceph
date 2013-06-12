@@ -560,7 +560,7 @@ void PGLog::_write_log(
   for (list<pg_log_entry_t>::iterator p = log.log.begin();
        p != log.log.end();
        ++p) {
-    if ((p->version < dirty_to) || (p->version > dirty_from)) {
+    if ((p->version < dirty_to) || (p->version >= dirty_from)) {
       bufferlist bl(sizeof(*p) * 2);
       p->encode_with_checksum(bl);
       keys[p->get_key_name()].claim(bl);
