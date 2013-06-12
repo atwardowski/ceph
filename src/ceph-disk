@@ -1037,15 +1037,10 @@ def prepare_dev(
                     data,
                     ],
                 )
+            # try to make sure the kernel refreshes the table.  note
+            # that if this gets ebusy, we are probably racing with
+            # udev because it already updated it.. ignore failure here.
             subprocess.call(
-                args=[
-                    # wait for udev event queue to clear
-                    'udevadm',
-                    'settle',
-                    '--timeout=10',
-                    ],
-                )
-            subprocess.check_call(
                 args=[
                     # also make sure the kernel refreshes the new table
                     'partprobe',
