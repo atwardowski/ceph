@@ -322,16 +322,7 @@ public:
                       pg_info_t &info, list<hobject_t>& remove_snap,
                       bool &dirty_info, bool &dirty_big_info);
 
-  void write_log(ObjectStore::Transaction& t, const hobject_t &log_oid) {
-    if (dirty()) {
-      _write_log(t, log, log_oid, divergent_priors,
-		 dirty_to,
-		 dirty_from,
-		 dirty_divergent_priors,
-		 !touched_log);
-      undirty();
-    }
-  }
+  void write_log(ObjectStore::Transaction& t, const hobject_t &log_oid);
 
   static void write_log(ObjectStore::Transaction& t, pg_log_t &log,
     const hobject_t &log_oid, map<eversion_t, hobject_t> &divergent_priors);

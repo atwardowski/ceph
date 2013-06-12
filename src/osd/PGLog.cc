@@ -527,6 +527,26 @@ void PGLog::merge_log(ObjectStore::Transaction& t,
   }
 }
 
+void PGLog::write_log(
+  ObjectStore::Transaction& t, const hobject_t &log_oid)
+{
+  if (dirty()) {
+    dout(10) << "write_log with: "
+	     << "dirty_to: " << dirty_to
+	     << ", dirty_from: " << dirty_from
+	     << ", dirty_divergent_priors: " << dirty_divergent_priors
+	     << dendl;
+    _write_log(t, log, log_oid, divergent_priors,
+	       dirty_to,
+	       dirty_from,
+	       dirty_divergent_priors,
+	       !touched_log);
+    undirty();
+  } else {
+    dout(10) << "log is not dirty" << dendl;
+  }
+}
+
 void PGLog::write_log(ObjectStore::Transaction& t, pg_log_t &log,
     const hobject_t &log_oid, map<eversion_t, hobject_t> &divergent_priors)
 {
